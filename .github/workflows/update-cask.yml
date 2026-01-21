@@ -1,0 +1,88 @@
+name: Update Cask
+
+on:
+  repository_dispatch:
+    types: [release-published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to update to (without v prefix)'
+        required: true
+
+jobs:
+  update:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get version
+        id: version
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          elif [ -n "${{ github.event.client_payload.version }}" ]; then
+            VERSION="${{ github.event.client_payload.version }}"
+          else
+            # Fetch latest release from GitHub API
+            VERSION=$(curl -s https://api.github.com/repos/VisiGrid/VisiGrid/releases/latest | jq -r '.tag_name' | sed 's/^v//')
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Download DMG and calculate SHA256
+        id: sha
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          DMG_URL="https://github.com/VisiGrid/VisiGrid/releases/download/v${VERSION}/VisiGrid-${VERSION}-macOS-universal.dmg"
+
+          echo "Downloading: $DMG_URL"
+          curl -L -o visigrid.dmg "$DMG_URL"
+
+          SHA256=$(shasum -a 256 visigrid.dmg | awk '{print $1}')
+          echo "sha256=$SHA256" >> $GITHUB_OUTPUT
+          echo "SHA256: $SHA256"
+
+      - name: Update cask
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          SHA256="${{ steps.sha.outputs.sha256 }}"
+
+          cat > Casks/visigrid.rb << EOF
+          cask "visigrid" do
+            version "$VERSION"
+            sha256 "$SHA256"
+
+            url "https://github.com/VisiGrid/VisiGrid/releases/download/v#{version}/VisiGrid-#{version}-macOS-universal.dmg"
+            name "VisiGrid"
+            desc "Fast, native spreadsheet with GPU-accelerated rendering"
+            homepage "https://visigrid.com"
+
+            livecheck do
+              url :url
+              strategy :github_latest
+            end
+
+            depends_on macos: ">= :monterey"
+
+            app "VisiGrid.app"
+
+            zap trash: [
+              "~/.config/visigrid",
+              "~/Library/Application Support/com.visigrid.app",
+              "~/Library/Caches/com.visigrid.app",
+              "~/Library/Preferences/com.visigrid.app.plist",
+              "~/Library/Saved Application State/com.visigrid.app.savedState",
+            ]
+          end
+          EOF
+
+      - name: Commit and push
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add Casks/visigrid.rb
+          git diff --staged --quiet || git commit -m "Update VisiGrid to v${VERSION}"
+          git push
