@@ -1,14 +1,14 @@
 cask "visigrid" do
-  version "0.1.5"
-  sha256 "REPLACE_WITH_SHA256"
+  version :latest
+  sha256 :no_check
 
-  url "https://github.com/VisiGrid/VisiGrid/releases/download/v#{version}/VisiGrid-#{version}-macOS-universal.dmg"
+  url "https://github.com/VisiGrid/VisiGrid/releases/latest/download/VisiGrid-macOS-universal.dmg"
   name "VisiGrid"
   desc "Fast, native spreadsheet with GPU-accelerated rendering"
-  homepage "https://visigrid.com"
+  homepage "https://visigrid.app"
 
   livecheck do
-    url :url
+    url "https://github.com/VisiGrid/VisiGrid/releases/latest"
     strategy :github_latest
   end
 
