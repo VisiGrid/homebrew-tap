@@ -12,9 +12,13 @@ on:
 jobs:
   update:
     runs-on: macos-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
 
       - name: Get version
         id: version
