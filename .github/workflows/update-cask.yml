@@ -37,7 +37,7 @@ jobs:
         id: sha
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          DMG_URL="https://github.com/VisiGrid/VisiGrid/releases/download/v${VERSION}/VisiGrid-${VERSION}-macOS-universal.dmg"
+          DMG_URL="https://github.com/VisiGrid/VisiGrid/releases/download/v${VERSION}/VisiGrid-macOS-universal.dmg"
 
           echo "Downloading: $DMG_URL"
           curl -L -o visigrid.dmg "$DMG_URL"
@@ -56,7 +56,7 @@ jobs:
             version "$VERSION"
             sha256 "$SHA256"
 
-            url "https://github.com/VisiGrid/VisiGrid/releases/download/v#{version}/VisiGrid-#{version}-macOS-universal.dmg"
+            url "https://github.com/VisiGrid/VisiGrid/releases/download/v#{version}/VisiGrid-macOS-universal.dmg"
             name "VisiGrid"
             desc "Fast, native spreadsheet with GPU-accelerated rendering"
             homepage "https://visigrid.com"
