@@ -8,7 +8,7 @@ class Visigrid < Formula
   depends_on :linux
 
   url "https://github.com/VisiGrid/VisiGrid/releases/download/v#{version}/VisiGrid-linux-x86_64.tar.gz"
-  sha256 "SKIP"  # Updated by CI after release artifacts are built
+  sha256 "8cc24c6e91cee8d52a7f2079c38f1a968656aff3712ec8e929fb82bcb318ce06"
 
   depends_on "gtk+3"
   depends_on "libxcb"
