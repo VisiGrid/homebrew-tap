@@ -4,22 +4,22 @@
 class Visigrid < Formula
   desc "The spreadsheet that behaves like code"
   homepage "https://visigrid.app"
-  version "0.5.3"
+  version "0.5.7"
   license "AGPL-3.0-only"
 
   on_macos do
     if Hardware::CPU.arm?
       url "https://github.com/VisiGrid/VisiGrid/releases/download/v#{version}/VisiGrid-macOS-universal.dmg"
-      sha256 "e52e784671637cb85331dd054b42b043bdceaa56e55b3e2fc082116313cd5908"
+      sha256 "cc8a54ec2248e59d5c07a5493c256911f97209eb5710a38726cc6539a0acaa82"
     else
       url "https://github.com/VisiGrid/VisiGrid/releases/download/v#{version}/VisiGrid-macOS-universal.dmg"
-      sha256 "e52e784671637cb85331dd054b42b043bdceaa56e55b3e2fc082116313cd5908"
+      sha256 "cc8a54ec2248e59d5c07a5493c256911f97209eb5710a38726cc6539a0acaa82"
     end
   end
 
   on_linux do
     url "https://github.com/VisiGrid/VisiGrid/releases/download/v#{version}/VisiGrid-linux-x86_64.tar.gz"
-    sha256 "1a42a4e0485ad1b2487de30d02402e1da98636a89bc11b972acbe0894e6845ac"
+    sha256 "cc42fd3d9880a0625724829418812e13ec291d2562ccc2800056b2b49a4662fd"
   end
 
   def install
