@@ -1,6 +1,6 @@
 cask "visigrid" do
   version "0.6.2"
-  sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+  sha256 "b72bfeae5d2ed1d6e05d296ce2ee0e9d1d60ce1844adf963b442d5bbf8bc2d28"
 
   url "https://github.com/VisiGrid/VisiGrid/releases/download/v#{version}/VisiGrid-macOS-universal.dmg"
   name "VisiGrid"
@@ -15,6 +15,7 @@ cask "visigrid" do
   depends_on macos: ">= :monterey"
 
   app "VisiGrid.app"
+  binary "#{appdir}/VisiGrid.app/Contents/MacOS/visigrid-cli"
 
   zap trash: [
     "~/.config/visigrid",
