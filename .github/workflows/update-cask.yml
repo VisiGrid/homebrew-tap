@@ -1,4 +1,4 @@
-name: Update Cask
+name: Update Homebrew
 
 on:
   repository_dispatch:
@@ -28,65 +28,48 @@ jobs:
           elif [ -n "${{ github.event.client_payload.version }}" ]; then
             VERSION="${{ github.event.client_payload.version }}"
           else
-            # Fetch latest release from GitHub API
             VERSION=$(curl -s https://api.github.com/repos/VisiGrid/VisiGrid/releases/latest | jq -r '.tag_name' | sed 's/^v//')
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Download DMG and calculate SHA256
+      - name: Download artifacts and calculate SHA256
         id: sha
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          DMG_URL="https://github.com/VisiGrid/VisiGrid/releases/download/v${VERSION}/VisiGrid-macOS-universal.dmg"
 
-          echo "Downloading: $DMG_URL"
-          curl -L -o visigrid.dmg "$DMG_URL"
+          echo "Downloading macOS DMG..."
+          curl -fL -o visigrid.dmg \
+            "https://github.com/VisiGrid/VisiGrid/releases/download/v${VERSION}/VisiGrid-macOS-universal.dmg"
+          DMG_SHA=$(shasum -a 256 visigrid.dmg | awk '{print $1}')
+          echo "dmg_sha256=$DMG_SHA" >> $GITHUB_OUTPUT
+          echo "DMG SHA256: $DMG_SHA"
 
-          SHA256=$(shasum -a 256 visigrid.dmg | awk '{print $1}')
-          echo "sha256=$SHA256" >> $GITHUB_OUTPUT
-          echo "SHA256: $SHA256"
+          echo "Downloading Linux tarball..."
+          curl -fL -o visigrid-linux.tar.gz \
+            "https://github.com/VisiGrid/VisiGrid/releases/download/v${VERSION}/VisiGrid-linux-x86_64.tar.gz"
+          LINUX_SHA=$(shasum -a 256 visigrid-linux.tar.gz | awk '{print $1}')
+          echo "linux_sha256=$LINUX_SHA" >> $GITHUB_OUTPUT
+          echo "Linux SHA256: $LINUX_SHA"
 
-      - name: Update cask
+      - name: Update cask (macOS)
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          SHA256="${{ steps.sha.outputs.sha256 }}"
+          SHA256="${{ steps.sha.outputs.dmg_sha256 }}"
+          sed -i '' "s/version \".*\"/version \"$VERSION\"/" Casks/visigrid.rb
+          sed -i '' "s/sha256 \".*\"/sha256 \"$SHA256\"/" Casks/visigrid.rb
 
-          cat > Casks/visigrid.rb << EOF
-          cask "visigrid" do
-            version "$VERSION"
-            sha256 "$SHA256"
-
-            url "https://github.com/VisiGrid/VisiGrid/releases/download/v#{version}/VisiGrid-macOS-universal.dmg"
-            name "VisiGrid"
-            desc "Fast, native spreadsheet with GPU-accelerated rendering"
-            homepage "https://visigrid.com"
-
-            livecheck do
-              url :url
-              strategy :github_latest
-            end
-
-            depends_on macos: ">= :monterey"
-
-            app "VisiGrid.app"
-
-            zap trash: [
-              "~/.config/visigrid",
-              "~/Library/Application Support/com.visigrid.app",
-              "~/Library/Caches/com.visigrid.app",
-              "~/Library/Preferences/com.visigrid.app.plist",
-              "~/Library/Saved Application State/com.visigrid.app.savedState",
-            ]
-          end
-          EOF
+      - name: Update formula (Linux)
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          SHA256="${{ steps.sha.outputs.linux_sha256 }}"
+          sed -i '' "s/version \".*\"/version \"$VERSION\"/" Formula/visigrid.rb
+          sed -i '' "s/sha256 \".*\"/sha256 \"$SHA256\"/" Formula/visigrid.rb
 
       - name: Commit and push
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          git add Casks/visigrid.rb
+          git add Casks/visigrid.rb Formula/visigrid.rb
           git diff --staged --quiet || git commit -m "Update VisiGrid to v${VERSION}"
           git push
