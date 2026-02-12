@@ -16,7 +16,7 @@ class Visigrid < Formula
 
   def install
     bin.install "visigrid"
-    bin.install "visigrid-cli" if File.exist?("visigrid-cli")
+    bin.install "vgrid" if File.exist?("vgrid")
 
     # Install desktop file and icon
     (share/"applications").install "visigrid.desktop" if File.exist?("visigrid.desktop")
@@ -29,7 +29,7 @@ class Visigrid < Formula
 
       Run with:
         visigrid              # GUI
-        visigrid-cli --help   # CLI
+        vgrid --help          # CLI
 
       You may need to log out and back in for the
       application to appear in your launcher.
