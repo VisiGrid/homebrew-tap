@@ -1,6 +1,6 @@
 cask "visigrid" do
-  version "0.7.7"
-  sha256 "250f8aabe3f7e0c368c7700fc4608224755a2c3fe9e7bea02a4d50f0306f5b4e"
+  version "0.7.8"
+  sha256 "04657f16ea77cfb77c42d7d802499c24d039c4d51653b667de2588181ee60458"
 
   url "https://github.com/VisiGrid/VisiGrid/releases/download/v#{version}/VisiGrid-macOS-universal.dmg"
   name "VisiGrid"
