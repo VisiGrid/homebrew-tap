@@ -7,14 +7,14 @@ This is the official [Homebrew](https://brew.sh) tap for [VisiGrid](https://visi
 ### macOS
 
 ```bash
-brew tap visigrid/visigrid
+brew tap visigrid/tap
 brew install --cask visigrid
 ```
 
 ### Linux
 
 ```bash
-brew tap visigrid/visigrid
+brew tap visigrid/tap
 brew install visigrid
 ```
 
@@ -40,14 +40,14 @@ brew upgrade visigrid
 
 ```bash
 brew uninstall --cask visigrid
-brew untap visigrid/visigrid
+brew untap visigrid/tap
 ```
 
 ### Linux
 
 ```bash
 brew uninstall visigrid
-brew untap visigrid/visigrid
+brew untap visigrid/tap
 ```
 
 ## Requirements
