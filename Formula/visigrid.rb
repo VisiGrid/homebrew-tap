@@ -1,14 +1,14 @@
 class Visigrid < Formula
   desc "Fast, native spreadsheet with GPU-accelerated rendering"
   homepage "https://visigrid.app"
-  version "0.45.0"
+  version "0.46.0"
   license "AGPL-3.0-only"
 
   # Linux only - macOS users should use the cask: brew install --cask visigrid/tap/visigrid
   depends_on :linux
 
   url "https://github.com/VisiGrid/VisiGrid/releases/download/v#{version}/VisiGrid-linux-x86_64.tar.gz"
-  sha256 "1743189d9ee4e8026f8c7d12855b00e4f5f58df16c81b7fb993305a62ccf3712"
+  sha256 "d8d4fb33e99c9568fb820416d998ad2c1c75a4aef263e7926cea67f3f6ca3de3"
 
   depends_on "gtk+3"
   depends_on "libxcb"
